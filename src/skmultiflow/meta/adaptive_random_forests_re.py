@@ -501,6 +501,9 @@ class ARFBaseLearner(BaseSKMObject):
 
         self.evaluator = self.evaluator_method()
 
+        # adding a list
+        self.counter_array = []
+
         # Initialize drift and warning detectors
         if drift_detection_method is not None:
             self._use_drift_detector = True
@@ -524,9 +527,25 @@ class ARFBaseLearner(BaseSKMObject):
             self.drift_detection.reset()
         self.evaluator = self.evaluator_method()
 
+    def populate_counter_array(self, X, y, classes):
+        for i in range(self.n_classes()):
+            self.counter_array[i] = 0
+    
+    ## update the counter array needs to be define
+    def update_counter_array(self, X, y, classes):
+        ##self.counter_array[position] + 1
+
     def partial_fit(self, X, y, classes, sample_weight, instances_seen):
         self.classifier.partial_fit(X, y, classes=classes, sample_weight=sample_weight)
 
+        if instances_seen <= 1:
+            populate_counter_array(self, X, y)
+        else:
+            update_counter_array(self. X, y)
+
+        if(self.counter_array !=0 ):
+            sample_weight = (1.0 - counter_array/instances_seen ) * sample_weight
+            
         if self.background_learner:
             self.background_learner.classifier.partial_fit(X, y,
                                                            classes=classes,
