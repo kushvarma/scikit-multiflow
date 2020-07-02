@@ -15,8 +15,8 @@ from skmultiflow.utils import get_dimensions, normalize_values_in_dict, check_ra
 import warnings
 
 
-class AdaptiveRandomForestClassifierRE(BaseSKMObject, ClassifierMixin, MetaEstimatorMixin):
-    """Adaptive Random Forest classifier.
+class AdaptiveRandomForestRE(BaseSKMObject, ClassifierMixin, MetaEstimatorMixin):
+    """Adaptive Random Forest Resampling classifier.
 
         Parameters
         ----------
@@ -145,7 +145,7 @@ class AdaptiveRandomForestClassifierRE(BaseSKMObject, ClassifierMixin, MetaEstim
            stream = SEAGenerator(random_state=1)
 
            # Setup Adaptive Random Forest Classifier
-           arf_re = AdaptiveRandomForestClassifierRE()
+           arf_re = AdaptiveRandomForestRE()
 
            # Setup variables to control loop and track performance
            n_samples = 0
@@ -528,23 +528,30 @@ class ARFBaseLearner(BaseSKMObject):
         self.evaluator = self.evaluator_method()
 
     def populate_counter_array(self, X, y, classes):
-        for i in range(self.n_classes()):
-            self.counter_array[i] = 0
+        for i in range(2):
+            self.counter_array.insert(i, 0)
+        # print(self.counter_array)
     
-    ## update the counter array needs to be define
+    # update the counter array needs to be define
     def update_counter_array(self, X, y, classes):
-        ##self.counter_array[position] + 1
+        # counter array need to be updated
+        self.counter_array[0] = 0 + 1
+
 
     def partial_fit(self, X, y, classes, sample_weight, instances_seen):
         self.classifier.partial_fit(X, y, classes=classes, sample_weight=sample_weight)
-
+        
+        print(instances_seen)
         if instances_seen <= 1:
-            populate_counter_array(self, X, y)
+            self.populate_counter_array(X, y, classes)
         else:
-            update_counter_array(self. X, y)
+            self.update_counter_array(X, y, classes)
 
-        if(self.counter_array !=0 ):
-            sample_weight = (1.0 - counter_array/instances_seen ) * sample_weight
+        class_label_index = 1
+        class_label_counter = self.counter_array[class_label_index]
+
+        if(class_label_counter != 0):
+            sample_weight = (1.0 - class_label_counter / instances_seen) * sample_weight
             
         if self.background_learner:
             self.background_learner.classifier.partial_fit(X, y,
