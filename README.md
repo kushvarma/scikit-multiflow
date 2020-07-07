@@ -103,3 +103,38 @@ publication, please use the following Bibtex entry:
   url     = {http://jmlr.org/papers/v19/18-251.html}
 }
 ```
+## How to build and install scikit-multiflow
+Follow CONTRIBUTING.md
+
+Short summary:
+1. Use anaconda3 for development. Create a new environment with python 3 and switch to that environment. Here dm_arf is the environment.
+
+```
+conda create --name dm_arf python=3
+
+conda activate dm_arf
+
+```
+
+2. Pull this repo
+```
+git clone https://github.com/kushvarma/scikit-multiflow.git
+```
+
+3. Install the dependencies
+```
+pip install -U numpy
+```
+Also Cython is required
+```
+pip install -U Cython
+```
+
+4. Inside your cloned directory run
+```
+$ pip install -e .
+```
+
+5. This will install dev version of scikit-multiflow from the souce code
+
+6. Make changes in the desired file and run `pip install -e .` to install the updated code.
