@@ -535,7 +535,7 @@ class ARFBaseLearner(BaseSKMObject):
     def class_value(self, X):
         # Need implementation
         class_value = 1 # need to calculated from instance
-        return class_class
+        return class_value
 
     def populate_counter_array(self, X, y, classes):
         for i in range(self.num_class(self, X)):
