@@ -527,27 +527,35 @@ class ARFBaseLearner(BaseSKMObject):
             self.drift_detection.reset()
         self.evaluator = self.evaluator_method()
 
+    def num_class(self, X):
+        # Need implementation
+        num_class = 1 # need to calculated from instance
+        return num_class
+
+    def class_value(self, X):
+        # Need implementation
+        class_value = 1 # need to calculated from instance
+        return class_class
+
     def populate_counter_array(self, X, y, classes):
-        for i in range(2):
+        for i in range(self.num_class(self, X)):
             self.counter_array.insert(i, 0)
-        # print(self.counter_array)
     
     # update the counter array needs to be define
     def update_counter_array(self, X, y, classes):
-        # counter array need to be updated
-        self.counter_array[0] = 0 + 1
+        c_value = self.class_value(self, X)
+        self.counter_array[c_value] = int(c_value) + 1
 
 
     def partial_fit(self, X, y, classes, sample_weight, instances_seen):
         self.classifier.partial_fit(X, y, classes=classes, sample_weight=sample_weight)
         
-        print(instances_seen)
         if instances_seen <= 1:
             self.populate_counter_array(X, y, classes)
         else:
             self.update_counter_array(X, y, classes)
 
-        class_label_index = 1
+        class_label_index = int(self.class_value(self, X))
         class_label_counter = self.counter_array[class_label_index]
 
         if(class_label_counter != 0):
